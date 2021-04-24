@@ -92,8 +92,8 @@ function build_node_impl {
     BDB_CFLAGS="-I${BDB_PREFIX}/include"
     # optimizing for speed would use the maximum threads available:
     #make -j$(nproc)
-    # but we're optimizing for mem-allocation. 1 thread
-    make -j1
+    # but we're optimizing for mem-allocation. 1 thread is quite slow, let's try 4 (we have 4GB and need to find the sweet-spot)
+    make -j3
     cd ../.. #travis is sourcing this script
     echo "    --> Finished build bitcoind"
 
@@ -116,7 +116,7 @@ function sub_compile {
 
     if [ $node_impl = "elements" ]; then
         echo "    --> compiling for elementsd"
-    elif [ $node_impl= "bitcoin" ]; then
+    elif [ $node_impl = "bitcoin" ]; then
         echo "    --> compiling for bitcoind"
     else
         echo "unknown node_impl $node_impl, please start like either:"
@@ -178,11 +178,11 @@ function parse_and_execute() {
         DEBUG=true
         shift
         ;;
-      --bitcoind)
+      --bitcoin)
         node_impl=bitcoin
         shift
         ;;
-      --elementsd)
+      --elements)
         node_impl=elements
         shift
         ;;
