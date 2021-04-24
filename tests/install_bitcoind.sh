@@ -32,7 +32,7 @@ function maybe_update {
     LOCAL=$(git describe --tags)
     if cat ../../pytest.ini | grep "addopts = --${node_impl}d-version" ; then
         # i admit that this is REALLY ugly. Happy for any recommendations to do that more easy
-        PINNED=$(cat ../../pytest.ini | grep "addopts = " | cut -d'=' -f2 |  sed 's/--/+/g' | tr '+' '\n' | grep ${node_impl} |  cut -d' ' -f2
+        PINNED=$(cat ../../pytest.ini | grep "addopts = " | cut -d'=' -f2 |  sed 's/--/+/g' | tr '+' '\n' | grep ${node_impl} |  cut -d' ' -f2)
     fi
     if [ -z $PINNED ]; then
         REMOTE=$(git rev-parse "$UPSTREAM")
