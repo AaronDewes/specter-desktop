@@ -90,7 +90,10 @@ function build_node_impl {
     fi
     export BDB_PREFIX="$(pwd)/contrib/db4"
     BDB_CFLAGS="-I${BDB_PREFIX}/include"
-    make -j$(nproc)
+    # optimizing for speed would use the maximum threads available:
+    #make -j$(nproc)
+    # but we're optimizing for mem-allocation. 1 thread
+    make -j1
     cd ../.. #travis is sourcing this script
     echo "    --> Finished build bitcoind"
 
