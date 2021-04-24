@@ -11,8 +11,6 @@ function checkout {
     node_setup_needed=false
     if [ ! -d "./${node_impl}/.git" ]; then
         echo "    --> cloning $node_impl"
-        elements_url=https://github.com/ElementsProject/elements.git
-        bitcoin_url=https://github.com/bitcoin/bitcoin.git
         if [ $node_impl = "elements" ]; then
             clone_url=https://github.com/ElementsProject/elements.git
         elif [ $node_impl= "bitcoin" ]; then
