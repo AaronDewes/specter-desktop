@@ -1,4 +1,7 @@
 from .node_controller import NodePlainController
+import logging
+
+logger = logging.getLogger(__name__)
 
 
 class BitcoindPlainController(NodePlainController):

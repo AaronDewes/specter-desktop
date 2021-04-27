@@ -84,7 +84,7 @@ def find_node_executable(node_impl):
         # copied from conftest.py
         # always prefer the self-compiled bitcoind if existing
         print(f"Checking tests/{node_impl}/src/{node_impl}d")
-        return f"./tests/{node_impl}/src/{node_impl}d"
+        return f"tests/{node_impl}/src/{node_impl}d"
     elif os.path.isfile(f"./tests/${node_impl}/bin/{node_impl}d"):
         return f"tests/{node_impl}/bin/{node_impl}d"
         # next take the self-installed binary if existing

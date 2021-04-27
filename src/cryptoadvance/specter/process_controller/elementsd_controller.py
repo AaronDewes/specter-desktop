@@ -1,4 +1,8 @@
 from .node_controller import NodePlainController
+import tempfile
+import logging
+
+logger = logging.getLogger(__name__)
 
 
 class ElementsPlainController(NodePlainController):
@@ -9,7 +13,7 @@ class ElementsPlainController(NodePlainController):
         elementsd_path="elements",
         rpcport=18555,
         network="regtest",
-        rpcuser="bitcoin",
+        rpcuser="liquid",
         rpcpassword="secret",
     ):
         # Just call super and add the node_impl
@@ -45,6 +49,39 @@ class ElementsPlainController(NodePlainController):
 
     def stop_elementsd(self):
         self.stop_node()
+
+    @classmethod
+    def construct_node_cmd(
+        cls,
+        rpcconn,
+        run_docker=True,
+        datadir=None,
+        node_path="bitcoind",
+        network="regtest",
+        extra_args=[],
+    ):
+        """ returns a command to run your elementsd """
+        btcd_cmd = '"{}" '.format(node_path)
+        if network != "mainnet":
+            btcd_cmd += " -{} ".format(network)
+        btcd_cmd += " -fallbackfee=0.0000001 "
+        btcd_cmd += " -validatepegin=0 "
+        btcd_cmd += " -port={} -rpcport={} -rpcbind=0.0.0.0 -rpcbind=0.0.0.0".format(
+            rpcconn.rpcport + 1, rpcconn.rpcport
+        )
+        btcd_cmd += " -rpcuser={} -rpcpassword={} ".format(
+            rpcconn.rpcuser, rpcconn.rpcpassword
+        )
+        btcd_cmd += " -rpcallowip=0.0.0.0/0 -rpcallowip=172.17.0.0/16 "
+        if not run_docker:
+            btcd_cmd += " -noprinttoconsole"
+            if datadir == None:
+                datadir = tempfile.mkdtemp(prefix="bitcoind_datadir")
+            btcd_cmd += ' -datadir="{}" '.format(datadir)
+        if extra_args:
+            btcd_cmd += " {}".format(" ".join(extra_args))
+        logger.debug("constructed elementsd-command: %s", btcd_cmd)
+        return btcd_cmd
 
     def version(self):
         """ Returns the version of elementsd, e.g. "v0.18.1" """
