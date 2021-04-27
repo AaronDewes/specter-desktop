@@ -13,6 +13,9 @@ from cryptoadvance.specter.process_controller.node_controller import (
     fetch_wallet_addresses_for_mining,
 )
 from cryptoadvance.specter.util.shell import which
+import logging
+
+logger = logging.getLogger(__name__)
 
 
 def test_node_running_bitcoin(caplog, docker, request):
@@ -77,9 +80,11 @@ def test_node_running_elements(caplog, docker, request):
     random_address = "mruae2834buqxk77oaVpephnA5ZAxNNJ1r"
     my_elementsd.testcoin_faucet(random_address, amount=25, mine_tx=True)
     my_elementsd.stop_node()
+    assert False
 
 
 def find_node_executable(node_impl):
+    logger.info(f"Searching for {node_impl}d executable from cwd={os.path.getcwd()}")
     if os.path.isfile(f"tests/{node_impl}/src/{node_impl}d"):
         # copied from conftest.py
         # always prefer the self-compiled bitcoind if existing
