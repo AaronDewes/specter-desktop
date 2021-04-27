@@ -22,7 +22,7 @@ def test_node_running(caplog, docker, request):
         pass
     else:
         my_bitcoind = NodePlainController(
-            node_path="bitcoind",
+            node_path=find_node_executable(),
             rpcport=18123,  # Non-standardport to not interfer
         )
 
