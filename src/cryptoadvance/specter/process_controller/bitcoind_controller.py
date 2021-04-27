@@ -14,6 +14,7 @@ class BitcoindPlainController(NodePlainController):
     ):
         # Just call super and add the node_impl
         super().__init__(
+            node_path=bitcoind_path,
             rpcport=rpcport,
             network=network,
             rpcuser=rpcuser,
