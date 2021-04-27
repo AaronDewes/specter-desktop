@@ -29,11 +29,24 @@ function maybe_update {
     node_impl=$1 # either bitcoin or elements
     # Determine if we need to pull. From https://stackoverflow.com/a/3278427
     UPSTREAM=origin/master
-    LOCAL=$(git describe --tags)
+    LOCAL=$(git describe --all | sed 's/heads\///' | sed 's/tags\///') # gives either a tag or "master" 
     if cat ../../pytest.ini | grep "addopts = --${node_impl}d-version" ; then
+        # in this case, we use the expected version from the test also as the tag to be checked out
         # i admit that this is REALLY ugly. Happy for any recommendations to do that more easy
         PINNED=$(cat ../../pytest.ini | grep "addopts = " | cut -d'=' -f2 |  sed 's/--/+/g' | tr '+' '\n' | grep ${node_impl} |  cut -d' ' -f2)
+        if [ "$node_impl" = "elements" ]; then
+            # in the case of elements, the tags have a "elements-" prefix
+            PINNED=$(echo "$PINNED" | sed 's/v//' | sed 's/^/elements-/')
+        fi
     fi
+    
+    # the version in pytest.ini is (also) used to check the version via getnetworkinfo()["subversion"]
+    # However, this might not be a valid git rev. So we need another way to specify the git-rev used
+    # as we want to be able to test against specific commits
+    if [ -f ../${node_impl}_gitrev_pinned ]; then
+        PINNED=$(cat ../${node_impl}_gitrev_pinned)
+    fi
+
     if [ -z $PINNED ]; then
         REMOTE=$(git rev-parse "$UPSTREAM")
         BASE=$(git merge-base @ "$UPSTREAM")
@@ -61,7 +74,8 @@ function build_node_impl {
     node_impl=$1 # either bitcoin or elements
     nodeimpl_setup_needed=$2
     
-    if [ "$nodeimpl_setup_needed" = "true" ] ; then
+    if [ "$nodeimpl_setup_needed" = 1 ] ; then
+        echo "    --> Autogen & Configure necessary"
         # Build dependencies. This is super slow, but it is cached so it runs fairly quickly.
         cd contrib
         # This is hopefully fullfilles (via .travis.yml most relevantly)
@@ -87,6 +101,8 @@ function build_node_impl {
             echo "unknown node_impl $node_impl"
             exit 1
         fi
+    else
+        echo "    --> Skipping Autogen & Configure"
     fi
     export BDB_PREFIX="$(pwd)/contrib/db4"
     BDB_CFLAGS="-I${BDB_PREFIX}/include"
@@ -110,29 +126,15 @@ function sub_help {
 }
 
 function sub_compile {
-    echo "    --> install_node.sh Start $(date) (compiling)"
     START=$(date +%s.%N)
     node_impl=$1
-
-    if [ $node_impl = "elements" ]; then
-        echo "    --> compiling for elementsd"
-    elif [ $node_impl = "bitcoin" ]; then
-        echo "    --> compiling for bitcoind"
-    else
-        echo "unknown node_impl $node_impl, please start like either:"
-        echo "$ ./install_node.sh --bitcoin compile"
-        echo "or"
-        echo "$ ./install_node.sh --elements compile"
-        exit 1
-    fi
-    echo "    --> install_node.sh Start $(date) (compiling)"
-    START=$(date +%s.%N)
+    echo "    --> install_node.sh Start $(date) (compiling for $node_impl)"
+    echo "        checkout ..."
     checkout $node_impl
     cd $node_impl
     maybe_update $node_impl
-    build_node_impl $node_impl true
-
-    # Build bitcoind. 
+    update=$?
+    build_node_impl $node_impl $update
 
     END=$(date +%s.%N)
     DIFF=$(echo "$END - $START" | bc)

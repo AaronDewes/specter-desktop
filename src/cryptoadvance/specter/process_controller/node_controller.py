@@ -119,7 +119,7 @@ class NodeController:
         Specify a longer timeout for slower devices (e.g. Raspberry Pi)
         """
         if self.check_existing() != None:
-            return None
+            return self.rpcconn
 
         logger.debug(f"Starting {self.node_impl}d")
         self._start_node(
@@ -148,10 +148,7 @@ class NodeController:
         return self.rpcconn
 
     def version(self):
-        """ Returns the version of bitcoind, e.g. "v0.19.1" """
-        version = self.get_rpc().getnetworkinfo()["subversion"]
-        version = version.replace("/", "").replace("Satoshi:", "v")
-        return version
+        raise Exception("version needs to be overridden by Subclassses")
 
     def get_rpc(self):
         """ wrapper for convenience """
