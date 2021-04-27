@@ -67,7 +67,11 @@ function maybe_update {
             return 1
         fi
     fi
-    return 0
+    if [ -f ./tests/${node_impl}/src/${node_impl}d ]; then
+        return 0
+    else
+        return 1
+    fi
 }
 
 function build_node_impl {
