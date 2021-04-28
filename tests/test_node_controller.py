@@ -80,7 +80,6 @@ def test_node_running_elements(caplog, docker, request):
     random_address = "mruae2834buqxk77oaVpephnA5ZAxNNJ1r"
     my_elementsd.testcoin_faucet(random_address, amount=25, mine_tx=True)
     my_elementsd.stop_node()
-    assert False
 
 
 def find_node_executable(node_impl):
