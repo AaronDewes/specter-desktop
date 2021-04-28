@@ -79,10 +79,9 @@ def instantiate_bitcoind_controller(docker, request, rpcport=18543, extra_args=[
     )
     running_version = bitcoind_controller.version()
     requested_version = request.config.getoption("--bitcoind-version")
-    assert (
-        running_version != requested_version,
+    assert running_version == requested_version, (
         "Please make sure that the Bitcoind-version (%s) matches with the version in pytest.ini (%s)"
-        % (running_version, requested_version),
+        % (running_version, requested_version)
     )
     return bitcoind_controller
 
