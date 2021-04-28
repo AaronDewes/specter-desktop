@@ -6,13 +6,24 @@ container:
 
 # We assume here that we're having a proper python3 system including virtualenv and pip
 prep_stuff_template: &PREP_STUFF_TEMPLATE
-  verify_script: python3 --version && virtualenv --version && pip3 --version
   bitcoind_installation_cache:
     folder: ./tests/bitcoin
     populate_script: set -o errexit; source ./tests/install_bitcoind.sh binary
   elementsd_installation_cache:
     folder: ./tests/elements
     populate_script: ./tests/install_bitcoind.sh --debug --elements compile
+  verify_script: 
+    - echo "  --> Version of python, virtualenv and pip3"
+    - python3 --version && virtualenv --version && pip3 --version
+    - echo "  --> Executables in tests/elements/src"
+    - find tests/elements/src -maxdepth 1 -type f -executable -exec ls -ld {} \;
+    - echo "  --> Executables in tests/bitcoin/src"
+    - find tests/bitcoin/src -maxdepth 1 -type f -executable -exec ls -ld {} \;
+    - echo "  --> bitcoind version"
+    - tests/bitcoin/src/bitcoind -version | head -1
+    - echo "  --> elements version"
+    - tests/elements/src/elementsd -version | head -1
+
   pip_script:
     #folder: /tmp/cirrus-ci-build/.env
     #fingerprint_script: echo muh && cat requirements.txt && cat test_requirements.txt
