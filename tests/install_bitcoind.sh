@@ -139,7 +139,8 @@ function sub_compile {
     maybe_update $node_impl
     update=$?
     build_node_impl $node_impl $update
-
+    echo "    --> Listing binaries"
+    find tests/${node_impl}/src -maxdepth 1 -type f -executable -exec ls -ld {} \;
     END=$(date +%s.%N)
     DIFF=$(echo "$END - $START" | bc)
     echo "    --> install_node.sh End $(date) took $DIFF"
@@ -159,6 +160,8 @@ function sub_binary {
     fi
     mv ./bitcoin-${version} bitcoin
     cd .. #cirrus is sourcing this script
+    echo "    --> Listing binaries"
+    find tests/bitcoin/bin -maxdepth 1 -type f -executable -exec ls -ld {} \;
     echo "    --> Finished installing bitcoind binary"
     END=$(date +%s.%N)
     DIFF=$(echo "$END - $START" | bc)
