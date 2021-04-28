@@ -84,11 +84,9 @@ def test_node_running_elements(caplog, docker, request):
 
 
 def find_node_executable(node_impl):
-    logger.info(f"Searching for {node_impl}d executable from cwd={os.path.getcwd()}")
     if os.path.isfile(f"tests/{node_impl}/src/{node_impl}d"):
         # copied from conftest.py
         # always prefer the self-compiled bitcoind if existing
-        print(f"Checking tests/{node_impl}/src/{node_impl}d")
         return f"tests/{node_impl}/src/{node_impl}d"
     elif os.path.isfile(f"./tests/${node_impl}/bin/{node_impl}d"):
         return f"tests/{node_impl}/bin/{node_impl}d"
