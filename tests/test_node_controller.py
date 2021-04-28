@@ -87,14 +87,11 @@ def find_node_executable(node_impl):
         # copied from conftest.py
         # always prefer the self-compiled bitcoind if existing
         return f"tests/{node_impl}/src/{node_impl}d"
-    elif os.path.isfile(f"./tests/${node_impl}/bin/{node_impl}d"):
+    elif os.path.isfile(f"./tests/{node_impl}/bin/{node_impl}d"):
         # next take the self-installed binary if existing
         return f"tests/{node_impl}/bin/{node_impl}d"
     else:
         # First list files in the folders above:
         logger.warn(f"Couldn't find reasonable executable for {node_impl}")
-        logger.warn(f"tests/{node_impl}/src/ contains:")
-        files = os.listdir(f"tests/{node_impl}/src/")
-        logger.warn((", ").join(files))
         # hmmm, maybe we have a bitcoind on the PATH
         return which(f"{node_impl}d")
