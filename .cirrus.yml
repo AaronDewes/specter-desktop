@@ -20,9 +20,12 @@ prep_stuff_template: &PREP_STUFF_TEMPLATE
     - echo "  --> Executables in tests/elements/src"
     - find tests/elements/src -maxdepth 1 -type f -executable -exec ls -ld {} \;
     - echo "  --> Executables in tests/bitcoin/src"
-    - find tests/bitcoin/src -maxdepth 1 -type f -executable -exec ls -ld {} \;
+    - find tests/bitcoin/src -maxdepth 1 -type f -executable -exec ls -ld {} \; || true
+    - echo "  --> Executables in tests/bitcoin/bin"
+    - find tests/bitcoin/src -maxdepth 1 -type f -executable -exec ls -ld {} \; || true
     - echo "  --> bitcoind version"
-    - tests/bitcoin/src/bitcoind -version | head -1
+    - tests/bitcoin/src/bitcoind -version | head -1 || true
+    - tests/bitcoin/bin/bitcoind -version | head -1 || true
     - echo "  --> elements version"
     - tests/elements/src/elementsd -version | head -1
 
