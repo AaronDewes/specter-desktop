@@ -8,7 +8,10 @@ container:
 prep_stuff_template: &PREP_STUFF_TEMPLATE
   bitcoind_installation_cache:
     folder: ./tests/bitcoin
-    fingerprint_script: cat pytest.ini | grep "addopts = " | cut -d'=' -f2 |  sed 's/--/+/g' | tr '+' '\n' | grep bitcoin |  cut -d' ' -f2 && cat tests/bitcoin_gitrev_pinned 2> /dev/null || true
+    fingerprint_script: 
+      - cat pytest.ini | grep "addopts = " | cut -d'=' -f2 |  sed 's/--/+/g' | tr '+' '\n' | grep bitcoin |  cut -d' ' -f2 
+      - cat tests/bitcoin_gitrev_pinned 2> /dev/null || true
+      - cat /etc/os-release | grep VERSION
     populate_script: ./tests/install_bitcoind.sh binary
   elementsd_installation_cache:
     folder: ./tests/elements
