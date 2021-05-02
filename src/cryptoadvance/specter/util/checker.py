@@ -58,10 +58,10 @@ class Checker:
                     % dt
                 )
         except Exception as e:
-            if self.error_counter < 5:
+            if self.error_counter < 5 or os.getenv("IS_UMBREL", False):
                 logger.error(e)
                 self.error_counter = self.error_counter + 1
-            if self.error_counter == 4:
+            if self.error_counter == 4 and not os.getenv("IS_UMBREL", False):
                 logger.error("The above Error-Message is now suppressed!")
         finally:
             self.last_check = time.time()
