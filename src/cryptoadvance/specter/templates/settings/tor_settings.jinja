@@ -60,7 +60,7 @@
 				<button type="submit" class="btn" name="action" value="test_tor">Test Tor Connection</button>&nbsp;
 				<button type="submit" class="btn" name="action" value="save">Save</button>
 			</div><br><br>
-            {% if not debug %}
+            {% if not debug and not umbrel %}
                 <h2>Tor Hidden Service</h2>
                 <p>Running Specter behind a Tor hidden service allows you to acccess Specter over Tor from anywhere.<br>
                 </p>

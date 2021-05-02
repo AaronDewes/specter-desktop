@@ -295,7 +295,7 @@ def notify_upgrade(app, flash):
     that there is an upgrade to specter.desktop
     :return the current version
     """
-    if app.specter.version.upgrade:
+    if app.specter.version.upgrade and not os.getenv("IS_UMBREL", False):
         flash(
             f"Upgrade notification: new version {app.specter.version.latest} is available.",
             "info",

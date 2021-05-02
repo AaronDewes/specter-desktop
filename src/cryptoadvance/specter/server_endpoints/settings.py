@@ -455,6 +455,7 @@ def tor():
         specter=app.specter,
         current_version=current_version,
         rand=rand,
+        umbrel=os.getenv("IS_UMBREL", False),
     )
 
 
